@@ -861,18 +861,26 @@
             Your message has been sent successfully! I'll get back to you soon.
           </div>
 
-          <form id="contactForm" onsubmit="sendEmail(event); return false;">
+          <form id="contactForm" action="https://formsubmit.co/kd434@njit.edu" method="POST">
+            <!-- Honeypot to prevent spam -->
+            <input type="text" name="_honey" style="display:none">
+            <!-- Disable captcha -->
+            <input type="hidden" name="_captcha" value="false">
+            <!-- Success page (we'll handle this with JS instead) -->
+            <input type="hidden" name="_next" value="#"> 
+            
             <div class="form-group">
-              <input type="text" class="form-control" id="nameInput" placeholder="Your Name" required />
+              <input type="text" class="form-control" name="name" id="nameInput" placeholder="Your Name" required />
             </div>
 
             <div class="form-group">
-              <input type="email" class="form-control" id="emailInput" placeholder="Your Email" required />
+              <input type="email" class="form-control" name="email" id="emailInput" placeholder="Your Email" required />
             </div>
 
             <div class="form-group">
               <textarea
                 class="form-control"
+                name="message"
                 id="messageInput"
                 placeholder="Your Message"
                 required
@@ -1006,37 +1014,18 @@
         }
       }
       
-      // Function to handle form submission
-      function sendEmail(event) {
-        event.preventDefault();
-        
-        const nameInput = document.getElementById('nameInput');
-        const emailInput = document.getElementById('emailInput');
-        const messageInput = document.getElementById('messageInput');
-        
-        // Simple validation
-        if (!nameInput.value || !emailInput.value || !messageInput.value) {
-          return false;
-        }
-        
-        // In a real implementation, you would send the form data to a server here
-        // For this example, we'll just show a success message
+      // Intercept the form submission to show success message while still sending the email
+      document.getElementById('contactForm').addEventListener('submit', function(event) {
+        // We don't prevent default here so the form will still submit
         
         // Show success message
         document.getElementById('successMessage').style.display = 'block';
-        
-        // Clear form fields
-        nameInput.value = '';
-        emailInput.value = '';
-        messageInput.value = '';
         
         // Hide success message after 5 seconds
         setTimeout(() => {
           document.getElementById('successMessage').style.display = 'none';
         }, 5000);
-        
-        return false;
-      }
+      });
 
       // Generate stars
       function generateStars(containerId, count) {
