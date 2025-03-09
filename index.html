@@ -1088,6 +1088,7 @@
                 href="mailto:kerminadavid@icloud.com" 
                 class="social-link"
                 aria-label="Send Email"
+                onclick="window.location.href='mailto:kerminadavid@icloud.com';"
                 ><i class="fas fa-envelope"></i
               ></a>
               <div class="tooltip">kerminadavid@icloud.com</div>
@@ -1221,51 +1222,25 @@
           });
         }
         
-        // Setup copy email functionality for desktop/laptop
+        // Setup right-click to copy for email
         const emailContainer = document.querySelector('.social-link-container:nth-child(3)');
         if (emailContainer) {
-          // Add right-click context menu for desktop
           emailContainer.addEventListener('contextmenu', function(e) {
             if (window.innerWidth > 768) { // Desktop only
               e.preventDefault();
               copyToClipboard('kerminadavid@icloud.com');
             }
           });
-          
-          // Add long-press functionality for mobile
-          let pressTimer;
-          emailContainer.addEventListener('touchstart', function() {
-            pressTimer = setTimeout(function() {
-              copyToClipboard('kerminadavid@icloud.com');
-            }, 500);
-          });
-          
-          emailContainer.addEventListener('touchend', function() {
-            clearTimeout(pressTimer);
-          });
         }
         
-        // Setup copy phone functionality for desktop/laptop
+        // Setup right-click to copy for phone
         const phoneContainer = document.querySelector('.social-link-container:nth-child(4)');
         if (phoneContainer) {
-          // Add right-click context menu for desktop
           phoneContainer.addEventListener('contextmenu', function(e) {
             if (window.innerWidth > 768) { // Desktop only
               e.preventDefault();
               copyToClipboard('8626861552');
             }
-          });
-          
-          // Add long-press functionality for mobile
-          let pressTimer;
-          phoneContainer.addEventListener('touchstart', function() {
-            pressTimer = setTimeout(function() {
-              copyToClipboard('8626861552');
-            }, 500);
-          });
-          
-          phoneContainer.addEventListener('touchend', function() {
-            clearTimeout(pressTimer);
           });
         }
       }
