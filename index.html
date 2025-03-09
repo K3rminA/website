@@ -1,12 +1,30 @@
-<!DOCTYPE html>
+/* Copy message styling */
+      .copy-message {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1rem;
+        z-index: 1000;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+      }
+      
+      .copy-message.fade-out {
+        opacity: 0;
+      }<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kermina David - Portfolio</title>
+    <!-- Favicon references with corrected paths -->
     <link rel="icon" href="image/Logo.ico" sizes="any">
     <link rel="icon" href="image/Logo.png" type="image/png">
-    <link rel="apple-touch-icon" href="images/Logo.png">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -397,6 +415,45 @@
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
       }
+      
+      /* Tooltip for contact links */
+      .social-link-container {
+        position: relative;
+      }
+      
+      .tooltip {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        z-index: 10;
+      }
+      
+      .social-link-container:hover .tooltip {
+        opacity: 1;
+        visibility: visible;
+      }
+      
+      /* Add arrow to tooltip */
+      .tooltip::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 0 5px 5px 5px;
+        border-style: solid;
+        border-color: transparent transparent rgba(0, 0, 0, 0.8) transparent;
+      }
 
       /* Project cards */
       .project-card {
@@ -531,7 +588,7 @@
         max-width: 1200px;
       }
       
-      .nav- {
+      .nav-logo {
         font-weight: 700;
         font-size: 1.2rem;
         color: var(--primary);
@@ -674,7 +731,7 @@
     <nav class="navbar">
       <div class="nav-container">
         <a href="#card-1" class="nav-logo">
-          <!-- Update this path after uploading your logo image -->
+          <!-- Updated path to match your uploaded file -->
           <img src="image/Logo.png" alt="K Logo" height="40">
           Kermina David
         </a>
@@ -1016,23 +1073,31 @@
               href="https://www.linkedin.com/in/kermina-david"
               class="social-link"
               target="_blank"
+              aria-label="LinkedIn Profile"
               ><i class="fab fa-linkedin-in"></i
             ></a>
             <a
               href="https://github.com/K3rminA"
               class="social-link"
               target="_blank"
+              aria-label="GitHub Profile"
               ><i class="fab fa-github"></i
             ></a>
-            <a 
-              href="mailto:kerminadavid@icloud.com" 
-              class="social-link"
-              onclick="window.location.href='mailto:kerminadavid@icloud.com'; return false;"
-              ><i class="fas fa-envelope"></i
-            ></a>
-            <a href="tel:8626861552" class="social-link"
-              ><i class="fas fa-phone"></i
-            ></a>
+            <div class="social-link-container">
+              <a 
+                href="mailto:kerminadavid@icloud.com" 
+                class="social-link"
+                aria-label="Send Email"
+                ><i class="fas fa-envelope"></i
+              ></a>
+              <div class="tooltip">kerminadavid@icloud.com</div>
+            </div>
+            <div class="social-link-container">
+              <a href="tel:8626861552" class="social-link" aria-label="Call Phone Number"
+                ><i class="fas fa-phone"></i
+              ></a>
+              <div class="tooltip">(862) 686-1552</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1135,18 +1200,75 @@
         }
       }
       
-      // Intercept the form submission to show success message while still sending the email
-      document.getElementById('contactForm').addEventListener('submit', function(event) {
-        // We don't prevent default here so the form will still submit
+      // Add ability to copy contact info on desktop
+      function setupContactActions() {
+        // Helper function to copy text to clipboard
+        function copyToClipboard(text) {
+          navigator.clipboard.writeText(text).then(() => {
+            // Show a temporary copied message
+            const message = document.createElement('div');
+            message.className = 'copy-message';
+            message.innerText = 'Copied to clipboard!';
+            document.body.appendChild(message);
+            
+            // Remove the message after 2 seconds
+            setTimeout(() => {
+              message.classList.add('fade-out');
+              setTimeout(() => {
+                document.body.removeChild(message);
+              }, 300);
+            }, 2000);
+          });
+        }
         
-        // Show success message
-        document.getElementById('successMessage').style.display = 'block';
+        // Setup copy email functionality for desktop/laptop
+        const emailContainer = document.querySelector('.social-link-container:nth-child(3)');
+        if (emailContainer) {
+          // Add right-click context menu for desktop
+          emailContainer.addEventListener('contextmenu', function(e) {
+            if (window.innerWidth > 768) { // Desktop only
+              e.preventDefault();
+              copyToClipboard('kerminadavid@icloud.com');
+            }
+          });
+          
+          // Add long-press functionality for mobile
+          let pressTimer;
+          emailContainer.addEventListener('touchstart', function() {
+            pressTimer = setTimeout(function() {
+              copyToClipboard('kerminadavid@icloud.com');
+            }, 500);
+          });
+          
+          emailContainer.addEventListener('touchend', function() {
+            clearTimeout(pressTimer);
+          });
+        }
         
-        // Hide success message after 5 seconds
-        setTimeout(() => {
-          document.getElementById('successMessage').style.display = 'none';
-        }, 5000);
-      });
+        // Setup copy phone functionality for desktop/laptop
+        const phoneContainer = document.querySelector('.social-link-container:nth-child(4)');
+        if (phoneContainer) {
+          // Add right-click context menu for desktop
+          phoneContainer.addEventListener('contextmenu', function(e) {
+            if (window.innerWidth > 768) { // Desktop only
+              e.preventDefault();
+              copyToClipboard('8626861552');
+            }
+          });
+          
+          // Add long-press functionality for mobile
+          let pressTimer;
+          phoneContainer.addEventListener('touchstart', function() {
+            pressTimer = setTimeout(function() {
+              copyToClipboard('8626861552');
+            }, 500);
+          });
+          
+          phoneContainer.addEventListener('touchend', function() {
+            clearTimeout(pressTimer);
+          });
+        }
+      }
 
       // Generate stars
       function generateStars(containerId, count) {
@@ -1331,6 +1453,20 @@
           cards.forEach((card, index) => {
               card.id = `card-${index + 1}`;
           });
+          
+          // Setup contact form submission handling
+          document.getElementById('contactForm').addEventListener('submit', function(event) {
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+              document.getElementById('successMessage').style.display = 'none';
+            }, 5000);
+          });
+          
+          // Setup advanced contact actions
+          setupContactActions();
       });
     </script>
   </body>
