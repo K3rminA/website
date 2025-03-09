@@ -227,6 +227,12 @@
         transform: translateY(-5px);
         box-shadow: 0 15px 25px rgba(106, 17, 203, 0.3);
       }
+      
+      .btn-small {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
 
       /* Progress Indicator */
       .pagination {
@@ -389,64 +395,6 @@
         box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
       }
 
-      /* Responsive Design */
-      @media screen and (max-width: 768px) {
-        .card-content {
-          width: 95%;
-          padding: 1.5rem;
-          max-height: 85vh;
-        }
-
-        .pagination {
-          right: 10px;
-        }
-
-        .card-title {
-          font-size: 1.8rem;
-        }
-
-        .card {
-          padding: 1rem 0.5rem;
-        }
-
-        .project-card {
-          padding: 1.25rem;
-        }
-
-        .shape-1,
-        .shape-2,
-        .shape-3 {
-          opacity: 0.4;
-        }
-      }
-
-      @media screen and (max-height: 700px) {
-        .card-content {
-          padding: 1.25rem;
-          max-height: 85vh;
-        }
-
-        .card-title {
-          margin-bottom: 0.5rem;
-        }
-
-        .card-text {
-          margin-bottom: 1rem;
-        }
-      }
-
-      /* Generate 20 random stars/confetti elements */
-      .stars-container,
-      .confetti-container {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-        z-index: 0;
-      }
-
       /* Project cards */
       .project-card {
         background-color: white;
@@ -479,6 +427,146 @@
         font-size: 0.95rem;
         color: #666;
       }
+      
+      /* Project Modal/Popup Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .modal-content {
+        background-color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      }
+      
+      .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 1.5rem;
+        color: var(--dark);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      
+      .modal-close:hover {
+        color: var(--primary);
+      }
+      
+      .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--primary);
+      }
+      
+      .modal-subtitle {
+        color: var(--secondary);
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .modal-image {
+        width: 100%;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+      }
+      
+      .modal-text {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--text);
+        text-align: left;
+      }
+      
+      /* Success Message */
+      .success-message {
+        display: none;
+        background-color: #d4edda;
+        color: #155724;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      /* Responsive Design */
+      @media screen and (max-width: 768px) {
+        .card-content {
+          width: 95%;
+          padding: 1.5rem;
+          max-height: 85vh;
+        }
+
+        .pagination {
+          right: 10px;
+        }
+
+        .card-title {
+          font-size: 1.8rem;
+        }
+
+        .card {
+          padding: 1rem 0.5rem;
+        }
+
+        .project-card {
+          padding: 1.25rem;
+        }
+
+        .shape-1,
+        .shape-2,
+        .shape-3 {
+          opacity: 0.4;
+        }
+        
+        .modal-content {
+          width: 95%;
+          padding: 1.5rem;
+        }
+      }
+
+      @media screen and (max-height: 700px) {
+        .card-content {
+          padding: 1.25rem;
+          max-height: 85vh;
+        }
+
+        .card-title {
+          margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+          margin-bottom: 1rem;
+        }
+      }
+
+      /* Generate 20 random stars/confetti elements */
+      .stars-container,
+      .confetti-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
     </style>
   </head>
   <body>
@@ -489,6 +577,17 @@
       <div class="pagination-bullet" data-index="3"></div>
       <div class="pagination-bullet" data-index="4"></div>
       <div class="pagination-bullet" data-index="5"></div>
+    </div>
+
+    <!-- Project Details Modal -->
+    <div id="projectModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <h3 id="modalTitle" class="modal-title"></h3>
+        <div id="modalSubtitle" class="modal-subtitle"></div>
+        <div id="modalImage" class="modal-image"></div>
+        <div id="modalText" class="modal-text"></div>
+      </div>
     </div>
 
     <!-- Swipeable Cards Container -->
@@ -611,6 +710,7 @@
               adaptive difficulty and gesture recognition to provide engaging
               rehabilitation exercises.
             </p>
+            <button class="btn btn-small" onclick="openProjectModal('space-game')">Click Here to Read More</button>
           </div>
 
           <div class="project-card">
@@ -636,6 +736,7 @@
               sensors and AI for remote mobility and environmental
               interpretation.
             </p>
+            <button class="btn btn-small" onclick="openProjectModal('robotic-arm')">Click Here to Read More</button>
           </div>
 
           <div class="project-card">
@@ -658,6 +759,7 @@
               in healthcare settings, with secure, role-specific access to
               patient records using iris-locking technology.
             </p>
+            <button class="btn btn-small" onclick="openProjectModal('ar-medical')">Click Here to Read More</button>
           </div>
         </div>
 
@@ -754,6 +856,11 @@
             projects, or learning more about my work? Feel free to reach out!
           </p>
 
+          <!-- Success message that will show when form is submitted -->
+          <div id="successMessage" class="success-message">
+            Your message has been sent successfully! I'll get back to you soon.
+          </div>
+
           <form id="contactForm" onsubmit="sendEmail(event); return false;">
             <div class="form-group">
               <input type="text" class="form-control" id="nameInput" placeholder="Your Name" required />
@@ -772,7 +879,7 @@
               ></textarea>
             </div>
 
-            <button type="button" class="btn" onclick="sendEmail(event)">Send Message</button>
+            <button type="submit" class="btn">Send Message</button>
           </form>
 
           <div class="social-links">
@@ -803,6 +910,134 @@
     </div>
 
     <script>
+      // Project details for popups
+      const projectDetails = {
+        'space-game': {
+          title: 'Space Adventure: Therapeutic Game for CP',
+          subtitle: 'Unity, C#, Machine Learning, Voice Recognition',
+          image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='200' viewBox='0 0 500 200'%3E%3Crect width='100%25' height='100%25' fill='%23000330'/%3E%3Ccircle cx='400' cy='40' r='30' fill='%23FFD700' opacity='0.9'/%3E%3Ccircle cx='80' cy='100' r='40' fill='%232575fc' opacity='0.7'/%3E%3Ccircle cx='300' cy='80' r='5' fill='white'/%3E%3Ccircle cx='350' cy='30' r='3' fill='white'/%3E%3Ccircle cx='100' cy='40' r='4' fill='white'/%3E%3Ccircle cx='250' cy='120' r='3' fill='white'/%3E%3Cpath d='M250,70 L270,90 L230,90 Z' fill='%23c471ed'/%3E%3Ccircle cx='250' cy='70' r='10' fill='%236a11cb'/%3E%3C/svg%3E",
+          description: `<p>The Space Adventure game is a therapeutic tool I designed specifically for children with cerebral palsy. This project emerged from my volunteer work at a pediatric rehabilitation center where I noticed that children often disengaged from traditional therapy exercises.</p>
+            
+            <p><strong>Key Features:</strong></p>
+            <ul>
+              <li><strong>Voice Recognition System:</strong> I implemented a custom voice recognition system that detects and analyzes speech patterns from children with speech difficulties. The game adapts to the user's current abilities and gradually increases challenges as they improve.</li>
+              <li><strong>Motion Tracking:</strong> Using webcam input, the game tracks hand and arm movements, allowing children to control a spaceship through gentle movements that align with their therapy goals.</li>
+              <li><strong>Adaptive Difficulty:</strong> I developed an algorithm that automatically adjusts game difficulty based on the player's performance, ensuring that therapy remains challenging but achievable.</li>
+              <li><strong>Progress Tracking:</strong> The game includes a comprehensive system that records performance metrics and generates reports for therapists and parents.</li>
+            </ul>
+            
+            <p><strong>Technical Implementation:</strong></p>
+            <p>Built in Unity with C#, the game utilizes TensorFlow for machine learning components. The voice recognition system was initially trained on a dataset of speech samples from children with various levels of cerebral palsy to ensure accuracy with impaired speech patterns.</p>
+            
+            <p><strong>Impact:</strong></p>
+            <p>During initial testing at the rehabilitation center, therapists reported a 40% increase in therapy participation and a significant improvement in patients' motivation. The game is currently being used by 3 rehabilitation centers in New Jersey.</p>`
+        },
+        'robotic-arm': {
+          title: 'Robotic Arm for Mobility Assistance',
+          subtitle: 'Embedded C++, SolidWorks, 3D Printing, AI',
+          image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='200' viewBox='0 0 500 200'%3E%3Crect width='100%25' height='100%25' fill='%23f5f5f5'/%3E%3Cpath d='M100,160 L100,60 L120,60 L120,160 Z' fill='%23555'/%3E%3Cpath d='M120,60 L160,30 L180,40 L130,65 Z' fill='%232575fc'/%3E%3Cpath d='M180,40 L240,30 L240,45 L180,55 Z' fill='%236a11cb'/%3E%3Cpath d='M240,30 L280,40 L270,55 L240,45 Z' fill='%232575fc'/%3E%3Ccircle cx='280' cy='47' r='10' fill='%23c471ed'/%3E%3Cpath d='M100,160 L350,160 L350,170 L100,170 Z' fill='%23ddd'/%3E%3C/svg%3E",
+          description: `<p>As President of NJIT's Prosthetics Club, I lead the development of an affordable, 3D-printed robotic arm designed to assist individuals with limited mobility. This project focuses on creating accessible technology for those who cannot afford commercial solutions.</p>
+            
+            <p><strong>Project Components:</strong></p>
+            <ul>
+              <li><strong>Mechanical Design:</strong> I utilized SolidWorks to design a modular arm system that can be easily customized to individual users' needs. The components are optimized for 3D printing with minimal material and support structures.</li>
+              <li><strong>Control System:</strong> Implemented an Arduino-based control system with multiple control options including muscle sensors (EMG), eye tracking, and voice commands to accommodate different user abilities.</li>
+              <li><strong>AI Integration:</strong> Developed a machine learning system that learns from user interactions, improving control precision over time and adapting to the user's unique movement patterns.</li>
+              <li><strong>Environmental Sensing:</strong> Added an array of sensors (proximity, pressure, temperature) to enable object detection and prevent accidents during use.</li>
+            </ul>
+            
+            <p><strong>Cost and Accessibility:</strong></p>
+            <p>By using open-source technologies and consumer-grade materials, we've reduced the cost to under $300 per unit, compared to commercial alternatives that often cost $5,000+. All designs and code are available through an open-source repository.</p>
+            
+            <p><strong>Current Status:</strong></p>
+            <p>The project has successfully delivered 12 customized arms to users, and we're currently working with a local rehabilitation center to develop a training program for recipients. Our next phase involves refining the AI system to improve gesture recognition accuracy.</p>`
+        },
+        'ar-medical': {
+          title: 'AR for Medical Communication',
+          subtitle: 'C#, C++, Java, Unity',
+          image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='200' viewBox='0 0 500 200'%3E%3Crect width='100%25' height='100%25' fill='%23f0f7ff'/%3E%3Cpath d='M150,30 L350,30 L350,170 L150,170 Z' fill='%23e6f3ff' stroke='%232575fc' stroke-width='2'/%3E%3Ccircle cx='200' cy='60' r='20' fill='%236a11cb' opacity='0.7'/%3E%3Cpath d='M220,70 L320,70' stroke='%23555' stroke-width='1' stroke-dasharray='5,3'/%3E%3Crect x='240' y='80' width='80' height='10' rx='2' fill='%23c471ed' opacity='0.8'/%3E%3Crect x='270' y='95' width='50' height='10' rx='2' fill='%232575fc' opacity='0.8'/%3E%3Ccircle cx='330' cy='60' r='15' fill='%23ff6b6b' opacity='0.7'/%3E%3C/svg%3E",
+          description: `<p>During my time at FusionCare, I led the development of an augmented reality communication platform specifically designed for healthcare professionals. This system enables immersive 3D collaboration between medical specialists regardless of their physical location.</p>
+            
+            <p><strong>Key Innovations:</strong></p>
+            <ul>
+              <li><strong>Secure Medical Record Access:</strong> I designed an iris-scanning authentication system that provides role-specific access to patient records within the AR environment, ensuring HIPAA compliance while maintaining ease of use.</li>
+              <li><strong>3D Anatomical Visualization:</strong> Implemented rendering algorithms that convert 2D medical images (MRIs, CT scans) into interactive 3D models that can be manipulated in real-time during consultations.</li>
+              <li><strong>Remote Consultation Tools:</strong> Created a suite of specialized tools that allow surgeons to demonstrate procedures, annotate specific areas of concern, and simulate treatment approaches collaboratively.</li>
+              <li><strong>Low-Latency Transmission:</strong> Developed a custom data compression algorithm that maintains high-quality visuals while reducing bandwidth requirements by approximately 40%.</li>
+            </ul>
+            
+            <p><strong>Technical Challenge:</strong></p>
+            <p>The most significant challenge was ensuring reliable performance across various hardware configurations. I created an adaptive rendering system that automatically adjusts visual fidelity based on available processing power and network conditions.</p>
+            
+            <p><strong>Results:</strong></p>
+            <p>The platform has been adopted by three regional hospitals in a pilot program, with initial feedback indicating a 25% reduction in consultation times and improved diagnosis accuracy in complex cases. The system is particularly valuable for connecting specialists with rural healthcare providers.</p>`
+        }
+      };
+
+      // Function to open the project modal with the appropriate content
+      function openProjectModal(projectId) {
+        const project = projectDetails[projectId];
+        if (project) {
+          document.getElementById('modalTitle').textContent = project.title;
+          document.getElementById('modalSubtitle').textContent = project.subtitle;
+          document.getElementById('modalImage').innerHTML = `<img src="${project.image}" alt="${project.title}" style="width:100%; border-radius:8px;">`;
+          document.getElementById('modalText').innerHTML = project.description;
+          
+          const modal = document.getElementById('projectModal');
+          modal.style.display = 'flex';
+          
+          // Prevent background scrolling when modal is open
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      // Function to close the modal
+      function closeModal() {
+        document.getElementById('projectModal').style.display = 'none';
+        // Re-enable scrolling
+        document.body.style.overflow = 'auto';
+      }
+      
+      // Close modal if user clicks outside of modal content
+      window.onclick = function(event) {
+        const modal = document.getElementById('projectModal');
+        if (event.target === modal) {
+          closeModal();
+        }
+      }
+      
+      // Function to handle form submission
+      function sendEmail(event) {
+        event.preventDefault();
+        
+        const nameInput = document.getElementById('nameInput');
+        const emailInput = document.getElementById('emailInput');
+        const messageInput = document.getElementById('messageInput');
+        
+        // Simple validation
+        if (!nameInput.value || !emailInput.value || !messageInput.value) {
+          return false;
+        }
+        
+        // In a real implementation, you would send the form data to a server here
+        // For this example, we'll just show a success message
+        
+        // Show success message
+        document.getElementById('successMessage').style.display = 'block';
+        
+        // Clear form fields
+        nameInput.value = '';
+        emailInput.value = '';
+        messageInput.value = '';
+        
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          document.getElementById('successMessage').style.display = 'none';
+        }, 5000);
+        
+        return false;
+      }
+
       // Generate stars
       function generateStars(containerId, count) {
           const container = document.getElementById(containerId);
