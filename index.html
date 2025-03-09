@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kermina David - Portfolio</title>
+    <!-- Custom Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%236a11cb'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='60' font-weight='bold' text-anchor='middle' fill='white'%3EK%3C/text%3E%3C/svg%3E" type="image/svg+xml">
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -505,6 +507,78 @@
         text-align: center;
       }
 
+      /* Navigation Bar */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        padding: 0.75rem 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+      }
+      
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 90%;
+        max-width: 1200px;
+      }
+      
+      .nav-logo {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+      }
+      
+      .nav-logo i {
+        margin-right: 0.5rem;
+        background: var(--bg-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+      }
+      
+      .nav-link {
+        font-weight: 500;
+        color: var(--dark);
+        padding: 0.25rem 0.5rem;
+        border-radius: 5px;
+        transition: var(--transition);
+      }
+      
+      .nav-link:hover,
+      .nav-link.active {
+        background: var(--bg-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      .nav-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--primary);
+        cursor: pointer;
+      }
+      
+      /* Adjust top padding for cards to account for navbar */
+      .card {
+        padding-top: 4rem;
+      }
+      
       /* Responsive Design */
       @media screen and (max-width: 768px) {
         .card-content {
@@ -523,6 +597,7 @@
 
         .card {
           padding: 1rem 0.5rem;
+          padding-top: 4rem;
         }
 
         .project-card {
@@ -538,6 +613,30 @@
         .modal-content {
           width: 95%;
           padding: 1.5rem;
+        }
+        
+        .nav-toggle {
+          display: block;
+        }
+        
+        .nav-links {
+          position: fixed;
+          top: 3.5rem;
+          right: -100%;
+          flex-direction: column;
+          background: white;
+          width: 80%;
+          max-width: 300px;
+          height: auto;
+          padding: 1rem;
+          border-radius: 10px;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+          transition: 0.3s ease;
+          gap: 1rem;
+        }
+        
+        .nav-links.active {
+          right: 1rem;
         }
       }
 
@@ -570,6 +669,26 @@
     </style>
   </head>
   <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="#card-1" class="nav-logo">
+          <i class="fas fa-microchip"></i>
+          Kermina David
+        </a>
+        <button class="nav-toggle" id="navToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-links" id="navLinks">
+          <a href="#card-1" class="nav-link active" data-index="1">Home</a>
+          <a href="#card-2" class="nav-link" data-index="2">About</a>
+          <a href="#card-3" class="nav-link" data-index="3">Projects</a>
+          <a href="#card-4" class="nav-link" data-index="4">Experience</a>
+          <a href="#card-5" class="nav-link" data-index="5">Contact</a>
+        </div>
+      </div>
+    </nav>
+    
     <!-- Pagination Indicator -->
     <div class="pagination">
       <div class="pagination-bullet active" data-index="1"></div>
@@ -1109,6 +1228,56 @@
           });
       }
 
+      // Update active nav link
+      function updateActiveNavLink() {
+          const container = document.querySelector('.swiper-container');
+          const scrollPosition = container.scrollTop;
+          const windowHeight = window.innerHeight;
+          const cards = document.querySelectorAll('.card');
+          const navLinks = document.querySelectorAll('.nav-link');
+          
+          cards.forEach((card, index) => {
+              const cardTop = card.offsetTop;
+              const cardHeight = card.offsetHeight;
+              
+              if (scrollPosition >= cardTop - windowHeight / 2 &&
+                  scrollPosition < cardTop + cardHeight - windowHeight / 2) {
+                  navLinks.forEach(link => link.classList.remove('active'));
+                  navLinks[index].classList.add('active');
+              }
+          });
+      }
+      
+      // Toggle mobile navigation
+      function toggleMobileNav() {
+          const navLinks = document.getElementById('navLinks');
+          navLinks.classList.toggle('active');
+          
+          const navToggle = document.getElementById('navToggle');
+          const icon = navToggle.querySelector('i');
+          
+          if (navLinks.classList.contains('active')) {
+              icon.classList.remove('fa-bars');
+              icon.classList.add('fa-times');
+          } else {
+              icon.classList.remove('fa-times');
+              icon.classList.add('fa-bars');
+          }
+      }
+      
+      // Close mobile nav when a link is clicked
+      function closeMobileNav() {
+          const navLinks = document.getElementById('navLinks');
+          if (navLinks.classList.contains('active')) {
+              navLinks.classList.remove('active');
+              
+              const navToggle = document.getElementById('navToggle');
+              const icon = navToggle.querySelector('i');
+              icon.classList.remove('fa-times');
+              icon.classList.add('fa-bars');
+          }
+      }
+
       // Initialize everything when DOM is loaded
       document.addEventListener('DOMContentLoaded', function() {
           // Generate visual elements
@@ -1127,13 +1296,39 @@
                   document.getElementById(`card-${index}`).scrollIntoView({ behavior: 'smooth' });
               });
           });
-
-          // Add scroll event listener to update active bullet
-          const container = document.querySelector('.swiper-container');
-          container.addEventListener('scroll', updateActiveBullet);
           
-          // Initial call to set the correct active bullet
+          // Handle navigation links
+          const navLinks = document.querySelectorAll('.nav-link');
+          
+          navLinks.forEach(link => {
+              link.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  const index = this.getAttribute('data-index');
+                  document.getElementById(`card-${index}`).scrollIntoView({ behavior: 'smooth' });
+                  closeMobileNav();
+              });
+          });
+          
+          // Handle mobile nav toggle
+          const navToggle = document.getElementById('navToggle');
+          navToggle.addEventListener('click', toggleMobileNav);
+
+          // Add scroll event listeners to update active elements
+          const container = document.querySelector('.swiper-container');
+          container.addEventListener('scroll', function() {
+              updateActiveBullet();
+              updateActiveNavLink();
+          });
+          
+          // Initial calls to set the correct active elements
           updateActiveBullet();
+          updateActiveNavLink();
+          
+          // Handle card IDs for direct linking
+          const cards = document.querySelectorAll('.card');
+          cards.forEach((card, index) => {
+              card.id = `card-${index + 1}`;
+          });
       });
     </script>
   </body>
